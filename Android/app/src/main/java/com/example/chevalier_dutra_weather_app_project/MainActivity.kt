@@ -1,46 +1,95 @@
 package com.example.chevalier_dutra_weather_app_project
 
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.chevalier_dutra_weather_app_project.ui.theme.CHEVALIER_DUTRA_Weather_App_ProjectTheme
+import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
+
+    private val weatherDataManager = WeatherDataManager()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent {
-            CHEVALIER_DUTRA_Weather_App_ProjectTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    Greeting("Android")
-                }
+        setContentView(R.layout.activity_main)
+
+        initData()
+    }
+
+    override fun onCreateOptionsMenu(currentMenu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu, currentMenu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_list-> {
+                Log.d("MainActivity", "Clicked List Item")
+                displayListFragment()
+                true
             }
+
+            R.id.action_map-> {
+                Log.d("MainActivity", "Clicked Map Item")
+                displayMapFragment()
+                true
+            }
+
+            R.id.action_about-> {
+                Log.d("MainActivity", "Clicked About Item")
+                displayAboutFragment()
+                true
+            }
+
+            // Handle other menu items as needed.
+            else -> super.onOptionsItemSelected(item)
         }
     }
-}
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+    private fun displayListFragment() {
+        val transaction = supportFragmentManager.beginTransaction()
+        Log.d("MainActivity", "Displaying List Fragment")
+        transaction.replace(
+            R.id.main_layout_fragment,
+            ListFragment.newInstance(weatherDataManager.getAllWeatherData())
+        )
+        transaction.commit()
+        //floatingActionButton.visibility = View.VISIBLE
+    }
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    CHEVALIER_DUTRA_Weather_App_ProjectTheme {
-        Greeting("Android")
+    private fun displayMapFragment() {
+        val transaction = supportFragmentManager.beginTransaction()
+        Log.d("MainActivity", "Displaying Map Fragment")
+        transaction.replace(
+            R.id.main_layout_fragment,
+            MapFragment.newInstance()
+        )
+        transaction.commit()
+        //floatingActionButton.visibility = View.VISIBLE
+    }
+
+    private fun displayAboutFragment() {
+        Log.d("MainActivity", "Displaying About Fragment")
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.replace(
+            R.id.main_layout_fragment,
+            AboutFragment.newInstance()
+        )
+        transaction.commit()
+        //floatingActionButton.visibility = View.VISIBLE
+    }
+    private fun initData() {
+        weatherDataManager.addWeather(
+            Weather(
+                "Gardanne",
+                "04/12/2023",
+                "16h30",
+                "4°C",
+                "77%"
+            )
+        )
     }
 }

@@ -1,3 +1,12 @@
 <resources>
-    <string name="app_name">CHEVALIER_DUTRA_Weather_App_Project</string>
+    <string name="app_name">CD Weather App</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="list">List</string>
+    <string name="map">Map</string>
+    <string name="about">About</string>
+    <string name="made_by_l_o_chevalier_and_carlos_dutra">Made by Léo CHEVALIER and Carlos DUTRA.</string>
+    <string name="this_is_a_school_project_that_is_part_of_our_ismin_computer_science_curriculum">This is a school project that is part of our ISMIN Computer Science curriculum.</string>
+    <string name="hello_welcome_to_our_weather_app">Hello, welcome to our weather app!</string>
 </resources>
