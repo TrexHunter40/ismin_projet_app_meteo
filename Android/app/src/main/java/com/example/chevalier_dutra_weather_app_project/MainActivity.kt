@@ -14,9 +14,14 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
 
         initData()
+
+
+        setContentView(R.layout.activity_main)
+        displayListFragment()
+
+
     }
 
     override fun onCreateOptionsMenu(currentMenu: Menu): Boolean {
@@ -65,7 +70,8 @@ class MainActivity : AppCompatActivity() {
         Log.d("MainActivity", "Displaying Map Fragment")
         transaction.replace(
             R.id.main_layout_fragment,
-            MapFragment.newInstance()
+            GoogleMapFragment.newInstance(weatherDataManager.getAllWeatherData())
+            //GoogleMapFragment(weatherDataManager)
         )
         transaction.commit()
         //floatingActionButton.visibility = View.VISIBLE
@@ -84,11 +90,34 @@ class MainActivity : AppCompatActivity() {
     private fun initData() {
         weatherDataManager.addWeather(
             Weather(
+                43.455672, 5.471045,
                 "Gardanne",
                 "04/12/2023",
                 "16h30",
                 "4°C",
                 "77%"
+            )
+        )
+
+        weatherDataManager.addWeather(
+            Weather(
+                48.648750, -2.025740,
+                "Saint-Malo",
+                "04/12/2023",
+                "16h30",
+                "-1°C",
+                "95%"
+            )
+        )
+
+        weatherDataManager.addWeather(
+            Weather(
+                43.886284, -0.500786,
+                "Mont-de-Marsan",
+                "04/12/2023",
+                "16h30",
+                "5°C",
+                "65%"
             )
         )
     }
