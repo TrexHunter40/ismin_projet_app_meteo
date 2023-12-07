@@ -21,6 +21,6 @@ describe('WeatherAPI', () => {
 
   it('/ (GET weather)', async() => {
     const response = await httpRequester.get('/Bray-Dunes').expect(200);
-    expect(response.body).toEqual(expect.any(Array));
+    expect(response.body).toEqual(expect.any(Object));
   });
 });

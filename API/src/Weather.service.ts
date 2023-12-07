@@ -13,25 +13,23 @@ export class WeatherService {
   async onModuleInit() : Promise<void>{
     await this.chargeDataFromAPI();
     //await Promise.all([this.chargeDataFromAPI()]);
-    console.log(this.dataWeather);
+    //console.log(this.dataWeather);
   }
 
-  async chargeDataFromAPI(): Promise<any>{
+  async chargeDataFromAPI(): Promise<void>{
     return firstValueFrom(
-        this.httpService
-            .get('https://data.opendatasoft.com/api/explore/v2.1/catalog/datasets/arome-0025-enriched@public/records?where=commune%20is%20not%20null&limit=100')
+        this.httpService.get('https://data.opendatasoft.com/api/explore/v2.1/catalog/datasets/arome-0025-enriched@public/records?where=commune%20is%20not%20null&limit=100')
             .pipe(
-                //tap((resp)=>console.log(resp.data)),
-                map((resp)=>resp.data.result),
-                tap((apiWeatherData : ApiWeather[])=>{
-                  apiWeatherData.forEach(e => {
-                    this.dataWeather.push({
-                      pos: e.position,
-                      city: e.commune,
-                      date: e.forecast.split("T")[0],
-                      time: e.forecast.split("T")[1],
-                      temperature: e["2_metre_temperature"],
-                      humidity: e["2_metre_relative_humidity"],
+                map((response) => response.data.results),
+                tap((w1 : ApiWeather[]) => {
+                  w1.forEach(w => {
+                    this.addWeather({
+                      pos: w.position,
+                      city: w.commune,
+                      date: w.forecast.split("T")[0],
+                      time: w.forecast.split("T")[1],
+                      temperature: w["2_metre_temperature"],
+                      humidity: w["2_metre_relative_humidity"],
                       favorite: false,
                     });
                   });
