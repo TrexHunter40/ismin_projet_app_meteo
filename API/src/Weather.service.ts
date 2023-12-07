@@ -2,7 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { Weather } from './Weather';
 import { HttpService } from '@nestjs/axios/dist'
 import {ApiWeather} from "./ApiWeather";
-import {map, tap} from "rxjs";
+import {firstValueFrom, map, tap} from "rxjs";
+import {WeatherDto} from "./WeatherDto";
 
 @Injectable()
 export class WeatherService {
@@ -11,31 +12,35 @@ export class WeatherService {
   constructor(private readonly httpService: HttpService) {} // Constructor
   async onModuleInit() : Promise<void>{
     await this.chargeDataFromAPI();
-    await Promise.all([this.chargeDataFromAPI()]);
+    //await Promise.all([this.chargeDataFromAPI()]);
+    console.log(this.dataWeather);
   }
 
   async chargeDataFromAPI(): Promise<any>{
-    this.httpService
-        .get<ApiWeather[]>('/api/explore/v2.1/catalog/datasets/arome-0025-enriched@public/records?limit=20')
-        .pipe(
-            map((resp)=>resp.data),
-            tap((ApiWeather)=>{
-              ApiWeather.forEach(e => {
-                return this.dataWeather.push({
-                  lat: e.pos.lat,
-                  long: e.pos.long,
-                  city: e.commune,
-                  date: e.date.split("T")[0],
-                  time: e.date.split("T")[1],
-                  temperature: e.temp,
-                  humidity: e.humidity,
-                  favorite: false,
-                });
-              });
-            }),
-        )
-        .subscribe();
+    return firstValueFrom(
+        this.httpService
+            .get('https://data.opendatasoft.com/api/explore/v2.1/catalog/datasets/arome-0025-enriched@public/records?where=commune%20is%20not%20null&limit=100')
+            .pipe(
+                //tap((resp)=>console.log(resp.data)),
+                map((resp)=>resp.data.result),
+                tap((apiWeatherData : ApiWeather[])=>{
+                  apiWeatherData.forEach(e => {
+                    this.dataWeather.push({
+                      pos: e.position,
+                      city: e.commune,
+                      date: e.forecast.split("T")[0],
+                      time: e.forecast.split("T")[1],
+                      temperature: e["2_metre_temperature"],
+                      humidity: e["2_metre_relative_humidity"],
+                      favorite: false,
+                    });
+                  });
+                }),
+                map(() => undefined),
+            ),
+    );
   }
+
   addWeather(weather: Weather): void{
     if (!this.dataWeather.some((dataWeather)=>weather.city === dataWeather.city)){
       this.dataWeather.push(weather)

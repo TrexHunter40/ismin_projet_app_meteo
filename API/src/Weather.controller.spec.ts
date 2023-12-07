@@ -1,16 +1,26 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { WeatherController } from './Weather.controller';
-import { WeatherService } from './Weather.service';
+import { INestApplication } from '@nestjs/common';
+import * as request from 'supertest';
+import { WeatherModule } from '../src/Weather.module';
+import supertest from "supertest";
 
-describe('WeatherController', () => {
-  let appController: WeatherController;
+describe('WeatherAPI', () => {
+  let app: INestApplication;
+  let httpRequester: supertest.SuperTest<supertest.Test>;
 
   beforeEach(async () => {
-    const app: TestingModule = await Test.createTestingModule({
-      controllers: [WeatherController],
-      providers: [WeatherService],
+    const moduleRef = await Test.createTestingModule({
+      imports: [WeatherModule],
     }).compile();
 
-    appController = app.get<WeatherController>(WeatherController);
+    app = moduleRef.createNestApplication();
+    await app.init();
+
+    httpRequester = request(app.getHttpServer());
+  });
+
+  it('/ (GET weather)', async() => {
+    const response = await httpRequester.get('/Bray-Dunes').expect(200);
+    expect(response.body).toEqual(expect.any(Array));
   });
 });

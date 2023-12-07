@@ -1,24 +1,26 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { AppModule } from './../src/app.module';
+import { WeatherModule } from '../src/Weather.module';
+import supertest from "supertest";
 
-describe('AppController (e2e)', () => {
+describe('WeatherAPI', () => {
   let app: INestApplication;
+  let httpRequester: supertest.SuperTest<supertest.Test>;
 
   beforeEach(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
+    const moduleRef = await Test.createTestingModule({
+      imports: [WeatherModule],
     }).compile();
 
-    app = moduleFixture.createNestApplication();
+    app = moduleRef.createNestApplication();
     await app.init();
+
+    httpRequester = request(app.getHttpServer());
   });
 
-  it('/ (GET)', () => {
-    return request(app.getHttpServer())
-      .get('/')
-      .expect(200)
-      .expect('Hello World!');
+  it('/ (GET weather)', async() => {
+    const response = await httpRequester.get('/weathers').expect(200);
+    expect(response.body).toEqual(expect.any(Array));
   });
 });

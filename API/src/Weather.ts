@@ -1,10 +1,11 @@
+import {Position} from "./Position";
+
 export interface Weather {
-    lat: string;
-    long: string;
+    pos: Position;
     city: string;
     date: string;
     time: string;
-    temperature: string;
-    humidity: string;
+    temperature: number;
+    humidity: number;
     favorite: boolean;
 }
