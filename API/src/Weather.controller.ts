@@ -11,24 +11,33 @@ export class WeatherController {
   getAllWeather(): Weather[] {
     return this.weatherService.getAllWeather();
   }
+
+  @Get('/total') // Adicionado o método getTotalNumberOfCities ao controlador
+  getTotalNumberOfCities(): number {
+    console.log("Entrou no /total");
+    return this.weatherService.getTotalNumberOfCities();
+  }
+
   @Get(':city')
   getWeatherByCity(@Param('city') city: string): Weather{
     return this.weatherService.getCityWeather(city);
   }
-  @Post()
+
+  @Post('/weathers')
   createWeather(@Body() wCreated: Weather): Weather{
     this.weatherService.addWeather(wCreated);
     return this.weatherService.getCityWeather(wCreated.city);
   }
 
-  @Put(':name')
-  setFavoriteCity(@Param('city') city: string, @Body() fav: boolean) : Weather{
+  @Put(':city') // Change the parameter name to 'city'
+  setFavoriteCity(@Param('city') city: string, @Body() fav: boolean): Weather {
     this.weatherService.setCityFavorite(city, fav);
     return this.weatherService.getCityWeather(city);
   }
 
-  @Delete(':city')
+  @Delete('/weathers/:city') // Corrigido o path da rota
   deleteWeather(@Param('city') city: string): void {
-    return this.weatherService.removeWeather(city);
+    this.weatherService.removeWeather(city);
   }
+
 }

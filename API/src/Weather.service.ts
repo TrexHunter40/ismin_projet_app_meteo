@@ -44,17 +44,25 @@ export class WeatherService {
       this.dataWeather.push(weather)
     }
   }
-  getCityWeather(city: string): Weather {
-    const w = this.dataWeather.find((weather)=>weather.city === city);
-    if (!w){
-      throw new Error(`No city with name ${city}`)
-    }
-    return w;
+  //getCityWeather(city: string): Weather {
+  //  const w = this.dataWeather.find((weather)=>weather.city === city);
+  //  if (!w){
+  //    throw new Error(`No city with name ${city}`)
+  //  }
+  // return w;
+  //}
+  getCityWeather(city: string): Weather | null {
+    const w = this.dataWeather.find((weather) => weather.city === city);
+    return w || null;
   }
 
-  setCityFavorite(city: string, fav: boolean){
-    const w = this.dataWeather.find((w)=> w.city === city);
-    this.dataWeather[w.city].favorite = fav;
+  setCityFavorite(city: string, fav: boolean) {
+    const weather = this.dataWeather.find((w) => w.city === city);
+    if (weather) {
+      weather.favorite = fav;
+    } else {
+      throw new Error(`No city with name ${city}`);
+    }
   }
 
   getAllWeather(): Weather[]{
