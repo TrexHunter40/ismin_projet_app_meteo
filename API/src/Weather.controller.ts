@@ -1,5 +1,5 @@
 import {Body, Controller, Delete, Get, Param, Post, Put} from '@nestjs/common';
-import { WeatherService } from './weather.service';
+import { WeatherService } from './Weather.service';
 import { WeatherDto } from './WeatherDto'
 import {Weather} from "./Weather";
 
