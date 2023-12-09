@@ -7,14 +7,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.viewmodel.CreationExtras.Empty.map
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.maps.android.clustering.ClusterItem
+import com.google.maps.android.clustering.ClusterManager
 
 
 private const val ARG_WEATHERDATA = "param1"
@@ -22,8 +23,10 @@ class GoogleMapFragment : Fragment() {
 
     private lateinit var googleMap: GoogleMap
     private var weatherData: ArrayList<Weather> = arrayListOf()
-    //private lateinit var clusterManager: ClusterManager<MyClusterItem> // Change MyClusterItem to your actual cluster item class
-    private lateinit var clusterManager: ClusterManager<MyItem>
+
+    private lateinit var clusterManager: ClusterManager<MarkerItem>
+
+    private val france = LatLng(46.632524, 1.7)
 
     private val callback = OnMapReadyCallback { googleMap ->
         /**
@@ -37,17 +40,18 @@ class GoogleMapFragment : Fragment() {
          */
 
         this.googleMap = googleMap
+        setUpClusterer()
 
         Log.d("GoogleMapFragment", "Weather data: $weatherData")
         createMarkers(weatherData)
 
         if (weatherData.isNotEmpty()) {
-            val france = LatLng(46.632524, 1.7)
-            googleMap.moveCamera(CameraUpdateFactory.zoomTo(5.5f))
-            googleMap.moveCamera(CameraUpdateFactory.newLatLng(france))
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(france, 5.5f))
         } else {
             Log.e("GoogleMapFragment", "weatherData is empty")
         }
+
+
 
         //googleMap.setOnMarkerClickListener(onMarkerClick)
     }
@@ -85,9 +89,15 @@ class GoogleMapFragment : Fragment() {
     }
 
 
-    fun createMarkers(dataList : ArrayList<Weather>) {
+    private fun createMarkers(dataList : ArrayList<Weather>) {
         dataList.forEach { weatherData ->
-            val location = LatLng(weatherData.latitude.toDouble(), weatherData.longitude.toDouble())
+
+            val location = LatLng(weatherData.latitude, weatherData.longitude)
+            val title = weatherData.city
+            val snippet = "Date: ${weatherData.date}\nTemperature: ${weatherData.temperature}\nHumidity: ${weatherData.humidity}"
+            val icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)
+            val alpha = 0.8f
+            /*
             val markerOptions = MarkerOptions()
                 .position(location)
                 .title(weatherData.city)
@@ -96,13 +106,16 @@ class GoogleMapFragment : Fragment() {
                 //.icon(BitmapDescriptorFactory.fromResource(R.drawable.arrow))
                 //.icon(BitmapDescriptorFactory.fromBitmap())
                 .alpha(0.8f)
-            googleMap.addMarker(markerOptions)
+             */
+            val newMarker = MarkerItem(location,title, snippet, icon, alpha)
+            //googleMap.addMarker(markerOptions)
+            clusterManager.addItem(newMarker)
         }
     }
 
     private fun setUpClusterer() {
         // Position the map.
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(51.503186, -0.126446), 10f))
+        //googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(france, 5.5f))
 
         // Initialize the manager with the context and the map.
         // (Activity extends context, so we can pass 'this' in the constructor.)
@@ -114,8 +127,37 @@ class GoogleMapFragment : Fragment() {
         googleMap.setOnMarkerClickListener(clusterManager)
 
         // Add cluster items (markers) to the cluster manager.
-        addItems()
+        //addMarkersToClusterer()
     }
+
+    /*
+    private fun addMarkersToClusterer() {
+
+        // Set some lat/lng coordinates to start with.
+        var lat = 51.5145160
+        var lng = -0.1270060
+
+        // Set the title and snippet strings.
+        val title = "This is the title"
+        val snippet = "and this is the snippet."
+
+        // Create a cluster item for the marker and set the title and snippet using the constructor.
+        val infoWindowItem = MarkerItem(lat, lng, title, snippet)
+        // Add the cluster item (marker) to the cluster manager.
+        clusterManager.addItem(infoWindowItem)
+
+
+        // Add ten cluster items in close proximity, for purposes of this example.
+        for (i in 0..9) {
+            val offset = i / 60.0
+            lat += offset
+            lng += offset
+            val offsetItem =
+                MarkerItem(lat, lng, "Title $i", "Snippet $i")
+            clusterManager.addItem(offsetItem)
+        }
+    }
+    */
 
     /*
     fun onMarkerClick(marker: Marker): Boolean {
@@ -142,15 +184,18 @@ class GoogleMapFragment : Fragment() {
     }
     */
     inner class MarkerItem(
-        lat: Double,
-        lng: Double,
+        position: LatLng,
         title: String,
-        snippet: String
+        snippet: String,
+        icon: BitmapDescriptor,
+        alpha: Float
     ) : ClusterItem {
 
         private val position: LatLng
         private val title: String
         private val snippet: String
+        private val icon: BitmapDescriptor
+        private val alpha: Float
 
         override fun getPosition(): LatLng {
             return position
@@ -169,9 +214,11 @@ class GoogleMapFragment : Fragment() {
         }
 
         init {
-            position = LatLng(lat, lng)
+            this.position = position
             this.title = title
             this.snippet = snippet
+            this.icon = icon
+            this.alpha = alpha
         }
     }
 }
