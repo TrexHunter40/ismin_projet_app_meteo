@@ -1,10 +1,10 @@
 package com.example.chevalier_dutra_weather_app_project
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
 
@@ -18,8 +18,6 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
         displayListFragment()
-
-
     }
 
     override fun onCreateOptionsMenu(currentMenu: Menu): Boolean {
@@ -151,5 +149,31 @@ class MainActivity : AppCompatActivity() {
                 "66%"
             )
         )
+
+        weatherDataManager.addWeather(
+            Weather(
+                -8.335099, 115.106876,
+                "Bali",
+                "04/12/2023",
+                "16h30",
+                "32°C",
+                "35%"
+            )
+        )
+
+        weatherDataManager.addWeather(
+            Weather(
+                25.762597, -80.214356,
+                "Miami",
+                "04/12/2023",
+                "16h30",
+                "24°C",
+                "10%"
+            )
+        )
+
+
+
+
     }
 }

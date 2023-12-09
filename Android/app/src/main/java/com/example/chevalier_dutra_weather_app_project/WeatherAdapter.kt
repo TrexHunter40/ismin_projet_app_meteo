@@ -19,6 +19,10 @@ class WeatherAdapter (private var weatherData: List<Weather>) : RecyclerView.Ada
         holder.temperature.text = weather.temperature
         holder.humidity.text = weather.humidity
 
+        val intTemperature = weather.temperature.substringBefore("°C").toInt()
+        holder.image.setImageResource(getThermometerImage(intTemperature))
+
+
         /*
         holder.txvIsbn.text = "ISBN: ${book.isbn}"
         holder.txvTitle.text = book.title
@@ -31,8 +35,19 @@ class WeatherAdapter (private var weatherData: List<Weather>) : RecyclerView.Ada
         return weatherData.size
     }
 
-    fun updateBooks(allWeatherData: List<Weather>) {
+
+    fun getThermometerImage(temperature: Int): Int {
+        return when {
+            temperature < 10 -> R.drawable.thermometer_cold
+            temperature < 25 -> R.drawable.thermometer_medium
+            else -> R.drawable.thermometer_warm
+        }
+    }
+
+    fun updateWeatherData(allWeatherData: List<Weather>) {
         weatherData = allWeatherData
         notifyDataSetChanged()
     }
+
+
 }

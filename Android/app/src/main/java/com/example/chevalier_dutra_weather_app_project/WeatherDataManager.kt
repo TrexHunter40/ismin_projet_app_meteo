@@ -17,4 +17,8 @@ class WeatherDataManager {
         Log.d("WeatherDataManager", "data: $res")
         return  res
     }
+
+    fun clear() {
+        data.clear()
+    }
 }

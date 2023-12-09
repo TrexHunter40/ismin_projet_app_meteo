@@ -90,11 +90,12 @@ class GoogleMapFragment : Fragment() {
 
 
     private fun createMarkers(dataList : ArrayList<Weather>) {
-        dataList.forEach { weatherData ->
+        dataList.forEach { weatherEntry ->
 
-            val location = LatLng(weatherData.latitude, weatherData.longitude)
-            val title = weatherData.city
-            val snippet = "Date: ${weatherData.date}\nTemperature: ${weatherData.temperature}\nHumidity: ${weatherData.humidity}"
+            val tag = weatherEntry
+            val location = LatLng(weatherEntry.latitude, weatherEntry.longitude)
+            val title = weatherEntry.city
+            val snippet = "Date: ${weatherEntry.date}\nTemperature: ${weatherEntry.temperature}\nHumidity: ${weatherEntry.humidity}"
             val icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)
             val alpha = 0.8f
             /*
@@ -107,7 +108,7 @@ class GoogleMapFragment : Fragment() {
                 //.icon(BitmapDescriptorFactory.fromBitmap())
                 .alpha(0.8f)
              */
-            val newMarker = MarkerItem(location,title, snippet, icon, alpha)
+            val newMarker = MarkerItem(tag, location,title, snippet, icon, alpha)
             //googleMap.addMarker(markerOptions)
             clusterManager.addItem(newMarker)
         }
@@ -126,9 +127,36 @@ class GoogleMapFragment : Fragment() {
         googleMap.setOnCameraIdleListener(clusterManager)
         googleMap.setOnMarkerClickListener(clusterManager)
 
+
+
+
+        // Set a listener for when the info window of a marker is clicked
+        googleMap.setOnInfoWindowClickListener { marker ->
+            // Get the weather object associated with the marker
+            val weather = marker.tag as Weather
+
+            Log.d("GoogleMap", "InfoWindow clicked")
+
+            // Start DetailsActivity
+            startActivity(DetailsActivity.newInstance(requireContext(), weather))
+
+        }
+
+
+
         // Add cluster items (markers) to the cluster manager.
         //addMarkersToClusterer()
     }
+
+    /*
+    googleMap.setOnInfoWindowClickListener { marker ->
+        // Get the weather object associated with the marker
+        val weather = marker.tag as Weather
+
+        // Start DetailsActivity
+        startActivity(DetailsActivity.newInstance(requireContext(), weather))
+    }
+     */
 
     /*
     private fun addMarkersToClusterer() {
@@ -184,6 +212,7 @@ class GoogleMapFragment : Fragment() {
     }
     */
     inner class MarkerItem(
+        tag: Weather,
         position: LatLng,
         title: String,
         snippet: String,
@@ -191,6 +220,7 @@ class GoogleMapFragment : Fragment() {
         alpha: Float
     ) : ClusterItem {
 
+        private val tag: Weather
         private val position: LatLng
         private val title: String
         private val snippet: String
@@ -214,6 +244,7 @@ class GoogleMapFragment : Fragment() {
         }
 
         init {
+            this.tag = tag
             this.position = position
             this.title = title
             this.snippet = snippet

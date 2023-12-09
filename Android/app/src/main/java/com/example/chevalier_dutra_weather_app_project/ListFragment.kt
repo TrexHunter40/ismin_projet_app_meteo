@@ -2,10 +2,10 @@ package com.example.chevalier_dutra_weather_app_project
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -30,6 +30,7 @@ class ListFragment : Fragment() {
     private var param2: String? = null
 
     private var weatherData: ArrayList<Weather> = arrayListOf()
+
     private lateinit var weatherAdapter: WeatherAdapter
     private lateinit var recyclerView: RecyclerView
 
