@@ -68,6 +68,8 @@ describe('WeatherAPI', () => {
     it('/GET all weather', async () => {
         const response = await httpRequester.get('/').expect(200);
         expect(response.body).toEqual(expect.any(Array));
+        console.log("== Teste get all weathers ==")
+        console.log(response.body);
     });
 
     it('/GET weather by city', async () => {
