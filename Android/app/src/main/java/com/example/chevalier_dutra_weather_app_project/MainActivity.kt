@@ -5,8 +5,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class MainActivity : AppCompatActivity() {
 
@@ -118,6 +116,39 @@ class MainActivity : AppCompatActivity() {
                 "16h30",
                 "5°C",
                 "65%"
+            )
+        )
+
+        weatherDataManager.addWeather(
+            Weather(
+                44.840249, -0.573871,
+                "Bordeaux",
+                "04/12/2023",
+                "16h30",
+                "4°C",
+                "70%"
+            )
+        )
+
+        weatherDataManager.addWeather(
+            Weather(
+                43.297686, 5.380224,
+                "Marseille",
+                "04/12/2023",
+                "16h30",
+                "8°C",
+                "55%"
+            )
+        )
+
+        weatherDataManager.addWeather(
+            Weather(
+                43.528626, 5.447987,
+                "Aix-en-Provence",
+                "04/12/2023",
+                "16h30",
+                "7°C",
+                "66%"
             )
         )
     }

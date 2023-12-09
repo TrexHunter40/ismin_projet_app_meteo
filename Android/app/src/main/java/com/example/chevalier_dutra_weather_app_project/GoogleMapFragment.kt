@@ -1,28 +1,29 @@
 package com.example.chevalier_dutra_weather_app_project
 
-import androidx.fragment.app.Fragment
 
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.viewmodel.CreationExtras.Empty.map
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 
+
 private const val ARG_WEATHERDATA = "param1"
 class GoogleMapFragment : Fragment() {
-//class GoogleMapFragment constructor(weatherDataManager: WeatherDataManager) : Fragment() {
 
     private lateinit var googleMap: GoogleMap
     private var weatherData: ArrayList<Weather> = arrayListOf()
-
-
+    //private lateinit var clusterManager: ClusterManager<MyClusterItem> // Change MyClusterItem to your actual cluster item class
+    private lateinit var clusterManager: ClusterManager<MyItem>
 
     private val callback = OnMapReadyCallback { googleMap ->
         /**
@@ -41,18 +42,14 @@ class GoogleMapFragment : Fragment() {
         createMarkers(weatherData)
 
         if (weatherData.isNotEmpty()) {
-            val firstWeatherData = weatherData[0]
-            googleMap.moveCamera(
-                CameraUpdateFactory.newLatLng(
-                    LatLng(
-                        firstWeatherData.latitude,
-                        firstWeatherData.longitude
-                    )
-                )
-            )
+            val france = LatLng(46.632524, 1.7)
+            googleMap.moveCamera(CameraUpdateFactory.zoomTo(5.5f))
+            googleMap.moveCamera(CameraUpdateFactory.newLatLng(france))
         } else {
             Log.e("GoogleMapFragment", "weatherData is empty")
         }
+
+        //googleMap.setOnMarkerClickListener(onMarkerClick)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -95,7 +92,87 @@ class GoogleMapFragment : Fragment() {
                 .position(location)
                 .title(weatherData.city)
                 .snippet("Date: ${weatherData.date}\nTemperature: ${weatherData.temperature}\nHumidity: ${weatherData.humidity}")
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE))
+                //.icon(BitmapDescriptorFactory.fromResource(R.drawable.arrow))
+                //.icon(BitmapDescriptorFactory.fromBitmap())
+                .alpha(0.8f)
             googleMap.addMarker(markerOptions)
         }
     }
+
+    private fun setUpClusterer() {
+        // Position the map.
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(51.503186, -0.126446), 10f))
+
+        // Initialize the manager with the context and the map.
+        // (Activity extends context, so we can pass 'this' in the constructor.)
+        clusterManager = ClusterManager(context, googleMap)
+
+        // Point the map's listeners at the listeners implemented by the cluster
+        // manager.
+        googleMap.setOnCameraIdleListener(clusterManager)
+        googleMap.setOnMarkerClickListener(clusterManager)
+
+        // Add cluster items (markers) to the cluster manager.
+        addItems()
+    }
+
+    /*
+    fun onMarkerClick(marker: Marker): Boolean {
+
+        // Retrieve the data from the marker.
+        var clickCount = marker.tag as Int?
+
+        // Check if a click count was set, then display the click count.
+        if (clickCount != null) {
+            clickCount = clickCount + 1
+            marker.tag = clickCount
+            Toast.makeText(
+                this,
+                marker.title +
+                        " has been clicked " + clickCount + " times.",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+
+        // Return false to indicate that we have not consumed the event and that we wish
+        // for the default behavior to occur (which is for the camera to move such that the
+        // marker is centered and for the marker's info window to open, if it has one).
+        return false
+    }
+    */
+    inner class MarkerItem(
+        lat: Double,
+        lng: Double,
+        title: String,
+        snippet: String
+    ) : ClusterItem {
+
+        private val position: LatLng
+        private val title: String
+        private val snippet: String
+
+        override fun getPosition(): LatLng {
+            return position
+        }
+
+        override fun getTitle(): String {
+            return title
+        }
+
+        override fun getSnippet(): String {
+            return snippet
+        }
+
+        override fun getZIndex(): Float {
+            return 0f
+        }
+
+        init {
+            position = LatLng(lat, lng)
+            this.title = title
+            this.snippet = snippet
+        }
+    }
 }
+
