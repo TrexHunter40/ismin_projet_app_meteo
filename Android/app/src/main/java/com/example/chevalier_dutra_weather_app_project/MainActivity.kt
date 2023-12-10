@@ -1,14 +1,34 @@
 package com.example.chevalier_dutra_weather_app_project
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
-class MainActivity : AppCompatActivity() {
+private const val SERVER_BASE_URL = "https://Project-Weather-LCR-CDO.cleverapps.io/"
 
+class MainActivity : AppCompatActivity(), WeatherAdapter.WeatherListener {
+
+    private lateinit var weatherAdapter: WeatherAdapter
     private val weatherDataManager = WeatherDataManager()
+    //private lateinit var recyclerView: RecyclerView
+
+
+    private val startForResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if( it.resultCode == RESULT_OK) {
+                val weather = it.data?.getSerializableExtra(CREATED_WEATHER) as Weather
+                weatherDataManager.addWeather(weather)
+                weatherAdapter.updateWeatherData(weatherDataManager.getAllWeatherData())
+            }
+        }
+
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -18,6 +38,11 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
         displayListFragment()
+
+        findViewById<FloatingActionButton>(R.id.a_main_btn_detail_weather).setOnClickListener {
+            val intent = Intent(this, DetailsActivity::class.java)
+            startForResult.launch(intent)
+        }
     }
 
     override fun onCreateOptionsMenu(currentMenu: Menu): Boolean {
@@ -49,6 +74,15 @@ class MainActivity : AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
+
+    override fun onCityClicked(weather: Weather) {
+
+        Log.d("MainActivity", "AAAAAAAAAAAAAAAAAAAAAAAAAAH")
+        val intent = Intent(this, DetailsActivity::class.java)
+        intent.putExtra("weather", weather)
+        this.startActivity(intent)
+    }
+
 
     private fun displayListFragment() {
         val transaction = supportFragmentManager.beginTransaction()
@@ -86,6 +120,7 @@ class MainActivity : AppCompatActivity() {
     private fun initData() {
         weatherDataManager.addWeather(
             Weather(
+                0,
                 43.455672, 5.471045,
                 "Gardanne",
                 "04/12/2023",
@@ -97,6 +132,7 @@ class MainActivity : AppCompatActivity() {
 
         weatherDataManager.addWeather(
             Weather(
+                1,
                 48.648750, -2.025740,
                 "Saint-Malo",
                 "04/12/2023",
@@ -108,6 +144,7 @@ class MainActivity : AppCompatActivity() {
 
         weatherDataManager.addWeather(
             Weather(
+                2,
                 43.886284, -0.500786,
                 "Mont-de-Marsan",
                 "04/12/2023",
@@ -119,6 +156,7 @@ class MainActivity : AppCompatActivity() {
 
         weatherDataManager.addWeather(
             Weather(
+                3,
                 44.840249, -0.573871,
                 "Bordeaux",
                 "04/12/2023",
@@ -130,6 +168,7 @@ class MainActivity : AppCompatActivity() {
 
         weatherDataManager.addWeather(
             Weather(
+                4,
                 43.297686, 5.380224,
                 "Marseille",
                 "04/12/2023",
@@ -141,6 +180,7 @@ class MainActivity : AppCompatActivity() {
 
         weatherDataManager.addWeather(
             Weather(
+                5,
                 43.528626, 5.447987,
                 "Aix-en-Provence",
                 "04/12/2023",
@@ -152,6 +192,7 @@ class MainActivity : AppCompatActivity() {
 
         weatherDataManager.addWeather(
             Weather(
+                6,
                 -8.335099, 115.106876,
                 "Bali",
                 "04/12/2023",
@@ -163,6 +204,7 @@ class MainActivity : AppCompatActivity() {
 
         weatherDataManager.addWeather(
             Weather(
+                7,
                 25.762597, -80.214356,
                 "Miami",
                 "04/12/2023",

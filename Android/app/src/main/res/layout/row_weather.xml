@@ -21,6 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:textColor="@color/textColorDarkPrimary"
         app:layout_constraintStart_toEndOf="@+id/row_weather_image"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Gardanne" />
@@ -30,6 +31,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:textColor="@color/textColorDarkPrimary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="2°C" />
@@ -39,6 +41,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textColor="@color/textColorDarkSecondary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/row_weather_temperature"
@@ -50,6 +53,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textColor="@color/textColorDarkSecondary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/row_weather_image"
         tools:text="22/10/1678" />
@@ -60,6 +64,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textColor="@color/textColorDarkSecondary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/row_weather_date"
         tools:text="16h30" />

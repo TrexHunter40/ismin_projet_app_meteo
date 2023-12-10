@@ -2,7 +2,7 @@ package com.example.chevalier_dutra_weather_app_project
 
 import android.util.Log
 
-
+val CREATED_WEATHER = "CREATED_WEATHER"
 class WeatherDataManager {
 
     private val data = HashMap<String, Weather>()

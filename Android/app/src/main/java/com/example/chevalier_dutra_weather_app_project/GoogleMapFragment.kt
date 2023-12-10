@@ -29,15 +29,6 @@ class GoogleMapFragment : Fragment() {
     private val france = LatLng(46.632524, 1.7)
 
     private val callback = OnMapReadyCallback { googleMap ->
-        /**
-         * Manipulates the map once available.
-         * This callback is triggered when the map is ready to be used.
-         * This is where we can add markers or lines, add listeners or move the camera.
-         * In this case, we just add a marker near Sydney, Australia.
-         * If Google Play services is not installed on the device, the user will be prompted to
-         * install it inside the SupportMapFragment. This method will only be triggered once the
-         * user has installed Google Play services and returned to the app.
-         */
 
         this.googleMap = googleMap
         setUpClusterer()
@@ -131,6 +122,7 @@ class GoogleMapFragment : Fragment() {
 
 
         // Set a listener for when the info window of a marker is clicked
+        /*
         googleMap.setOnInfoWindowClickListener { marker ->
             // Get the weather object associated with the marker
             val weather = marker.tag as Weather
@@ -141,6 +133,8 @@ class GoogleMapFragment : Fragment() {
             startActivity(DetailsActivity.newInstance(requireContext(), weather))
 
         }
+
+         */
 
 
 

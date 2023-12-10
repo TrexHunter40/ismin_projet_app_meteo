@@ -4,7 +4,23 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 
-class WeatherAdapter (private var weatherData: List<Weather>) : RecyclerView.Adapter<WeatherViewHolder>(){
+class WeatherAdapter (private var weatherData: List<Weather>, private val weatherListener: WeatherListener) : RecyclerView.Adapter<WeatherViewHolder>(){
+
+    interface WeatherListener {
+        fun onCityClicked(weather: Weather)
+    }
+
+
+
+    //var onRowClickListener: ((position: Int) -> Unit)? = null
+
+    /*
+    interface WeatherListener {
+        fun onCityClicked(position: Int)
+    }
+
+     */
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WeatherViewHolder {
         val rowView = LayoutInflater.from(parent.context)
             .inflate(R.layout.row_weather, parent, false)
@@ -13,6 +29,7 @@ class WeatherAdapter (private var weatherData: List<Weather>) : RecyclerView.Ada
 
     override fun onBindViewHolder(holder: WeatherViewHolder, position: Int) {
         val weather = weatherData[position]
+
         holder.city.text = weather.city
         holder.date.text = weather.date
         holder.time.text = weather.time
@@ -22,6 +39,21 @@ class WeatherAdapter (private var weatherData: List<Weather>) : RecyclerView.Ada
         val intTemperature = weather.temperature.substringBefore("°C").toInt()
         holder.image.setImageResource(getThermometerImage(intTemperature))
 
+        holder.linkWeather(weather)
+        holder.itemView.setOnClickListener {
+            weatherListener.onCityClicked(weather)
+        }
+        /*
+        holder.itemView.setOnClickListener {
+            onRowClickListener.onRowClick(position)
+        }
+        */
+        /*
+        holder.itemView.setOnClickListener {
+            onRowClickListener?.invoke(position)
+        }
+
+         */
 
         /*
         holder.txvIsbn.text = "ISBN: ${book.isbn}"
@@ -30,6 +62,8 @@ class WeatherAdapter (private var weatherData: List<Weather>) : RecyclerView.Ada
         holder.txvDate.text = book.date
         */
     }
+
+
 
     override fun getItemCount(): Int {
         return weatherData.size

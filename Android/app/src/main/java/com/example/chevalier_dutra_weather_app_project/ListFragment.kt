@@ -24,7 +24,7 @@ private const val ARG_PARAM3 = "param3"
  * Use the [ListFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class ListFragment : Fragment() {
+class ListFragment : Fragment(), WeatherAdapter.WeatherListener {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -52,7 +52,28 @@ class ListFragment : Fragment() {
         Log.d("ListFragment", "onCreateView called")
 
         recyclerView = view.findViewById(R.id.weather_data)
-        weatherAdapter = WeatherAdapter(weatherData)
+
+        weatherAdapter = WeatherAdapter(weatherData, activity as WeatherAdapter.WeatherListener)
+
+        /*
+        weatherAdapter.onRowClickListener = { position ->
+            Log.d("ListFragment", "row n°:$position clicked")
+            if (isAdded) {
+                val weather = weatherData[position]
+                val intent = DetailsActivity.newInstance(requireActivity(), weather)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                //startActivity.launch(intent)
+            }
+
+            /*
+            val intent = Intent(this, DetailsActivity::class.java)
+            startForResult.launch(intent)
+             */
+
+        }
+        */
+
+
         recyclerView.adapter = weatherAdapter
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.addItemDecoration(
@@ -88,6 +109,11 @@ class ListFragment : Fragment() {
                 }
             }
     }
+
+    override fun onCityClicked(weather: Weather) {
+        Log.d("ListFragment", "temp call onCityClicked")
+    }
+
 }
 
 /*
