@@ -5,37 +5,38 @@ import {Weather} from "./Weather";
 
 @Controller()
 export class WeatherController {
+  //constructor
   constructor(private readonly weatherService: WeatherService,) {}
 
-  @Get()
+  @Get() // Method to get all available weathers
   getAllWeather(): Weather[] {
     return this.weatherService.getAllWeather();
   }
 
-  @Get('/total') // Adicionado o método getTotalNumberOfCities ao controlador
+  @Get('/total') // Method to get the total number of cities
   getTotalNumberOfCities(): number {
     console.log("Entrou no /total");
     return this.weatherService.getTotalNumberOfCities();
   }
 
-  @Get(':city')
+  @Get(':city') // Method to get the weather for a specific city
   getWeatherByCity(@Param('city') city: string): Weather{
     return this.weatherService.getCityWeather(city);
   }
 
-  @Post('/weathers')
+  @Post('/weathers') // Method to create the weather data for a city
   createWeather(@Body() wCreated: Weather): Weather{
     this.weatherService.addWeather(wCreated);
     return this.weatherService.getCityWeather(wCreated.city);
   }
 
-  @Put(':city') // Change the parameter name to 'city'
+  @Put(':city') // Method to set city as a favorite
   setFavoriteCity(@Param('city') city: string, @Body() fav: boolean): Weather {
     this.weatherService.setCityFavorite(city, fav);
     return this.weatherService.getCityWeather(city);
   }
 
-  @Delete('/weathers/:city') // Corrigido o path da rota
+  @Delete('/weathers/:city') // Method to delete a city
   deleteWeather(@Param('city') city: string): void {
     this.weatherService.removeWeather(city);
   }

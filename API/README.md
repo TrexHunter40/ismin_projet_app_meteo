@@ -1,73 +1,73 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# **Web & Android Development Project - API**
+# Weather App
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+#### This project is deployed on Clever Cloud in 'ISMIN CS' - 'Project Weather'
+## This project contains the following files
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+- A `Weather` interface containing 7 attributes:
+    - `pos`: {number, number};
+    - `city`: string;
+    - `date`: string;
+    - `time`: string;
+    - `temperature`: number;
+    - `humidity`: number;
+    - `favorite`: boolean;
 
-## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- A `ApiWeather` interface containing a replica of the data structure of the database for extraction:
+  - `forecast`: string;
+  - `position`: {number, number};
+  - `timestamp`: string;
+  - `"2_metre_temperature"`: number;
+  - `minimum_temperature_at_2_metres`: number;
+  - `maximum_temperature_at_2_metres`: number;
+  - `"2_metre_relative_humidity"`: number;
+  - `total_precipitation`: number;
+  - `"10m_wind_speed"`: number;
+  - `surface_net_solar_radiation`: number;
+  - `surface_net_thermal_radiation`: number;
+  - `surface_solar_radiation_downwards`: number;
+  - `surface_latent_heat_flux`: number;
+  - `surface_sensible_heat_flux`: number;
+  - `commune`: string;
+  - `code_commune`: string;
 
-## Installation
+A `main` contains the application bootstrap with:
+- The module to start
+- The port that the server will listen : port 8080
 
-```bash
-$ npm install
+A `Weather.controller`, which receives and processes requests
+- `Get `  provide all weathers
+- ` Post - createWeather` Adding a new weather to the API
+- ` Get - WeatherByCity` Return the weather according to the city name
+- ` Put - setFavoriteCity` adding a city as a favorite
+- ` Delete - DeleteWeather` Delete the weather for a city
+
+A `Weather.service` class containing
+-` async chargeDataFromAPI()` Loads all weathers from the API
+- `addWeather(weather: Weather)` Adds a city to the database
+- `getCityWeather(city: string)` returning a `Weather`
+- `getAllWeather()` returning an array of `Weather`
+- `getTotalNumberOfWeather()` returning a number
+- `setCityFavorite()` Changes the favorite status for a city
+- `removeWeather(name: string)` Removes a city from the database
+
+A `Weather.module` Links all Nest components
+
+A `WeatherDto` classes with the weather constructor
+
+##  Getting Started
+
+Open a terminal, go to the directory and run the following commands:
+
+```sh
+# This will install all needed dependencies
+npm install
+
+# This will build the source and put the transpiled code in `/dist` directory
+npm run build
+
+
+# This will start the API 
+npm run start:dev
 ```
-
-## Running the app
-
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
-```
-
-## Test
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
-```
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).

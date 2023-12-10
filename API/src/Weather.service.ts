@@ -10,13 +10,13 @@ export class WeatherService {
   private dataWeather: Weather[] = [];
 
   constructor(private readonly httpService: HttpService) {} // Constructor
-  async onModuleInit() : Promise<void>{
+  async onModuleInit() : Promise<void>{ // Constructor
     await this.chargeDataFromAPI();
     //await Promise.all([this.chargeDataFromAPI()]);
     //console.log(this.dataWeather);
   }
 
-  async chargeDataFromAPI(): Promise<void>{
+  async chargeDataFromAPI(): Promise<void>{ // Loads all data from the API
     return firstValueFrom(
         this.httpService.get('https://data.opendatasoft.com/api/explore/v2.1/catalog/datasets/arome-0025-enriched@public/records?where=commune%20is%20not%20null&limit=100')
             .pipe(
@@ -39,24 +39,18 @@ export class WeatherService {
     );
   }
 
-  addWeather(weather: Weather): void{
+  addWeather(weather: Weather): void{ // Add weather for a city
     if (!this.dataWeather.some((dataWeather)=>weather.city === dataWeather.city)){
       this.dataWeather.push(weather)
     }
   }
-  //getCityWeather(city: string): Weather {
-  //  const w = this.dataWeather.find((weather)=>weather.city === city);
-  //  if (!w){
-  //    throw new Error(`No city with name ${city}`)
-  //  }
-  // return w;
-  //}
-  getCityWeather(city: string): Weather | null {
+
+  getCityWeather(city: string): Weather | null { // Retrieve the weather to a city using its name
     const w = this.dataWeather.find((weather) => weather.city === city);
     return w || null;
   }
 
-  setCityFavorite(city: string, fav: boolean) {
+  setCityFavorite(city: string, fav: boolean) { // Change the favorite status of a city
     const weather = this.dataWeather.find((w) => w.city === city);
     if (weather) {
       weather.favorite = fav;
@@ -65,17 +59,17 @@ export class WeatherService {
     }
   }
 
-  getAllWeather(): Weather[]{
+  getAllWeather(): Weather[]{ // Retrieve all the weathers
     return this.dataWeather.sort((w1, w2) =>
         w1.city.toLowerCase().localeCompare(w2.city.toLowerCase()),
     );
   }
 
-  getTotalNumberOfCities(): number{
+  getTotalNumberOfCities(): number{ // Get total number of cities
     return this.dataWeather.length;
   }
 
-  removeWeather(city: string){
+  removeWeather(city: string){ // Delete a city from the database
     this.dataWeather = this.dataWeather.filter((w) => w.city !== city);
   }
 }
