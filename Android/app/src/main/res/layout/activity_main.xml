@@ -26,46 +26,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@android:drawable/ic_popup_sync" />
-    <!--app:layout_constraintTop_toBottomOf="@+id/include" -->
-
-    <!--
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/ListFragment"
-        android:name="com.example.chevalier_dutra_weather_app_project.ListFragment"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/include"
-        tools:layout="@layout/fragment_list" />
-
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/MapFragment"
-        android:name="com.example.chevalier_dutra_weather_app_project.MapFragment"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/include"
-        tools:layout="@layout/fragment_map" />
-
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/AboutFragment"
-        android:name="com.example.chevalier_dutra_weather_app_project.AboutFragment"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/include" />
-
-    -->
-
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

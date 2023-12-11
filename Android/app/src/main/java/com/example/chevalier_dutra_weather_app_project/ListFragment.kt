@@ -12,18 +12,9 @@ import androidx.recyclerview.widget.RecyclerView
 
 
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_WEATHERDATA = "param1"
-private const val ARG_PARAM2 = "param2"
-private const val ARG_PARAM3 = "param3"
 
 
-/**
- * A simple [Fragment] subclass.
- * Use the [ListFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class ListFragment : Fragment(), WeatherAdapter.WeatherListener {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
@@ -37,8 +28,6 @@ class ListFragment : Fragment(), WeatherAdapter.WeatherListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM2)
-            param2 = it.getString(ARG_PARAM3)
             weatherData = it.getSerializable(ARG_WEATHERDATA) as ArrayList<Weather>
         }
     }
@@ -55,25 +44,6 @@ class ListFragment : Fragment(), WeatherAdapter.WeatherListener {
 
         weatherAdapter = WeatherAdapter(weatherData, activity as WeatherAdapter.WeatherListener)
 
-        /*
-        weatherAdapter.onRowClickListener = { position ->
-            Log.d("ListFragment", "row n°:$position clicked")
-            if (isAdded) {
-                val weather = weatherData[position]
-                val intent = DetailsActivity.newInstance(requireActivity(), weather)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                //startActivity.launch(intent)
-            }
-
-            /*
-            val intent = Intent(this, DetailsActivity::class.java)
-            startForResult.launch(intent)
-             */
-
-        }
-        */
-
-
         recyclerView.adapter = weatherAdapter
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.addItemDecoration(
@@ -87,15 +57,6 @@ class ListFragment : Fragment(), WeatherAdapter.WeatherListener {
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ListFragment.
-         */
-        // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(weatherData: ArrayList<Weather>) =
             ListFragment().apply {
@@ -111,53 +72,11 @@ class ListFragment : Fragment(), WeatherAdapter.WeatherListener {
     }
 
     override fun onCityClicked(weather: Weather) {
-        Log.d("ListFragment", "temp call onCityClicked")
+        Log.d("ListFragment", "City row Clicked")
+    }
+
+    override fun onFavoriteClicked(weather: Weather) {
+        Log.d("ListFragment", "Favorite button Clicked")
     }
 
 }
-
-/*
-class BookListFragment : Fragment() {
-    private var books: ArrayList<Book> = arrayListOf()
-    private lateinit var bookAdapter: BookAdapter
-    private lateinit var recyclerView: RecyclerView
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            books = it.getSerializable(ARG_BOOKS) as ArrayList<Book>
-        }
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_book_list, container, false)
-
-        recyclerView = view.findViewById(R.id.f_book_list_rcv_books)
-        bookAdapter = BookAdapter(books)
-        recyclerView.adapter = bookAdapter
-        recyclerView.layoutManager = LinearLayoutManager(context)
-        recyclerView.addItemDecoration(
-            DividerItemDecoration(
-                context,
-                DividerItemDecoration.VERTICAL
-            )
-        )
-
-        return view
-    }
-
-    companion object {
-        @JvmStatic
-        fun newInstance(books: ArrayList<Book>) =
-            BookListFragment().apply {
-                arguments = Bundle().apply {
-                    putSerializable(ARG_BOOKS, books)
-                }
-            }
-    }
-}
-*/

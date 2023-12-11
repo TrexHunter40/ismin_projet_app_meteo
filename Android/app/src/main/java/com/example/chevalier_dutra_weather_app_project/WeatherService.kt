@@ -15,13 +15,13 @@ interface WeatherService {
     @GET("total") // Method to get the total number of cities
     fun getTotalNumberOfCities(): Call<Int>
 
-    @GET("{city}") // Method to get the weather for a specific city
+    @GET("weatherData/{city}") // Method to get the weather for a specific city
     fun getWeatherByCity(@Path("city") city: String): Call<Weather>
 
-    @POST("weathers") // Method to create the weather data for a city
+    @POST("weathers") // Method to create a weather data entry for a city
     fun createWeather(@Body wCreated: Weather): Call<Weather>
 
-    @PUT("{city}") // Method to set city as a favorite
+    @PUT("weatherData/{city}") // Method to set city as a favorite / remove it (given boolean)
     fun setFavoriteCity(@Path("city") city: String, @Body fav: Boolean): Call<Weather>
 
     @DELETE("weathers/{city}") // Method to delete a city

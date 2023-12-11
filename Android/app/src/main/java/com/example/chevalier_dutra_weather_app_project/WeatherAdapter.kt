@@ -1,5 +1,6 @@
 package com.example.chevalier_dutra_weather_app_project
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -9,18 +10,10 @@ class WeatherAdapter (private var weatherData: List<Weather>, private val weathe
 
     interface WeatherListener {
         fun onCityClicked(weather: Weather)
+        fun onFavoriteClicked(weather: Weather)
     }
 
-
-
-    //var onRowClickListener: ((position: Int) -> Unit)? = null
-
-    /*
-    interface WeatherListener {
-        fun onCityClicked(position: Int)
-    }
-
-     */
+    private var favorite = false
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WeatherViewHolder {
         val rowView = LayoutInflater.from(parent.context)
@@ -35,38 +28,44 @@ class WeatherAdapter (private var weatherData: List<Weather>, private val weathe
         holder.date.text = weather.date
         holder.time.text = weather.time
         holder.temperature.text = "" + roundToFirstDigit(weather.temperature) + "°C"
-        holder.humidity.text = "" + roundToFirstDigit(weather.humidity) + "%"
 
-        //val intTemperature = weather.temperature.substringBefore("°C").toInt()
         holder.image.setImageResource(getThermometerImage(weather.temperature))
+
+
+        val drawableResource = if (weather.favorite) {
+            android.R.drawable.btn_star_big_on
+        } else {
+            android.R.drawable.btn_star_big_off
+        }
+        holder.favorite_button.setBackgroundResource(drawableResource)
+
 
         holder.linkWeather(weather)
         holder.itemView.setOnClickListener {
             weatherListener.onCityClicked(weather)
         }
-        /*
-        holder.itemView.setOnClickListener {
-            onRowClickListener.onRowClick(position)
-        }
-        */
-        /*
-        holder.itemView.setOnClickListener {
-            onRowClickListener?.invoke(position)
-        }
 
-         */
+        holder.favorite_button.setOnClickListener {
+            weatherListener.onFavoriteClicked(weather)
+            //favorite = !favorite
 
-        /*
-        holder.txvIsbn.text = "ISBN: ${book.isbn}"
-        holder.txvTitle.text = book.title
-        holder.txvAuthor.text = book.author
-        holder.txvDate.text = book.date
-        */
+        }
     }
 
     fun roundToFirstDigit(value: Double): Double {
         val decimalFormat = DecimalFormat("#.#")
         return decimalFormat.format(value).toDouble()
+    }
+
+    fun roundToFirstDigit(value: String): Double {
+        try {
+            val parsedValue = value.replace(",", ".").toDouble()
+            val decimalFormat = DecimalFormat("#.#")
+            return decimalFormat.format(parsedValue).toDouble()
+        } catch (e: NumberFormatException) {
+            Log.e("WeatherAdapter", "Error parsing value: $value")
+            return (-300).toDouble()
+        }
     }
 
     override fun getItemCount(): Int {

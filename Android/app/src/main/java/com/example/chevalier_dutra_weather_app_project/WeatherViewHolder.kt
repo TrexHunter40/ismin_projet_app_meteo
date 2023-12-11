@@ -4,6 +4,7 @@ package com.example.chevalier_dutra_weather_app_project
 import android.content.Intent
 import android.util.Log
 import android.view.View
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -19,7 +20,7 @@ class WeatherViewHolder(rootView: View) : RecyclerView.ViewHolder(rootView) {
     var date = rootView.findViewById<TextView>(R.id.row_weather_date)
     var time = rootView.findViewById<TextView>(R.id.row_weather_time)
     var temperature = rootView.findViewById<TextView>(R.id.row_weather_temperature)
-    var humidity = rootView.findViewById<TextView>(R.id.row_weather_humidity)
+    var favorite_button = rootView.findViewById<Button>(R.id.row_weather_favorite_button)
 
     fun linkWeather(weather: Weather) {
         this.weather = weather
@@ -35,7 +36,7 @@ class WeatherViewHolder(rootView: View) : RecyclerView.ViewHolder(rootView) {
                 }
             }
             else
-                Log.e("ViewHolder", "AAAAAAAAAAAAAAAAAAAAAAAAAAH")
+                Log.e("ViewHolder", "Details opened")
         }
     }
 

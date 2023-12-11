@@ -41,10 +41,6 @@ class GoogleMapFragment : Fragment() {
         } else {
             Log.e("GoogleMapFragment", "weatherData is empty")
         }
-
-
-
-        //googleMap.setOnMarkerClickListener(onMarkerClick)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -86,44 +82,23 @@ class GoogleMapFragment : Fragment() {
 
             val tag = weatherEntry
             val location = LatLng(weatherEntry.pos.lat, weatherEntry.pos.lon)
-            //val location = weatherEntry.pos
             val title = weatherEntry.city
-            val snippet = "Date: ${weatherEntry.date}\nTemperature: ${weatherEntry.temperature}\nHumidity: ${weatherEntry.humidity}"
+            val snippet = "Temperature: ${weatherEntry.temperature.toInt()}°C"
             val icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)
             val alpha = 0.8f
-            /*
-            val markerOptions = MarkerOptions()
-                .position(location)
-                .title(weatherData.city)
-                .snippet("Date: ${weatherData.date}\nTemperature: ${weatherData.temperature}\nHumidity: ${weatherData.humidity}")
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE))
-                //.icon(BitmapDescriptorFactory.fromResource(R.drawable.arrow))
-                //.icon(BitmapDescriptorFactory.fromBitmap())
-                .alpha(0.8f)
-             */
+
             val newMarker = MarkerItem(tag, location, title, snippet, icon, alpha)
-            //googleMap.addMarker(markerOptions)
+
             clusterManager.addItem(newMarker)
         }
     }
 
     private fun setUpClusterer() {
-        // Position the map.
-        //googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(france, 5.5f))
-
-        // Initialize the manager with the context and the map.
-        // (Activity extends context, so we can pass 'this' in the constructor.)
         clusterManager = ClusterManager(context, googleMap)
 
-        // Point the map's listeners at the listeners implemented by the cluster
-        // manager.
         googleMap.setOnCameraIdleListener(clusterManager)
         googleMap.setOnMarkerClickListener(clusterManager)
 
-
-
-
-        // Set a listener for when the info window of a marker is clicked
         /*
         googleMap.setOnInfoWindowClickListener { marker ->
             // Get the weather object associated with the marker
@@ -132,81 +107,16 @@ class GoogleMapFragment : Fragment() {
             Log.d("GoogleMap", "InfoWindow clicked")
 
             // Start DetailsActivity
-            startActivity(DetailsActivity.newInstance(requireContext(), weather))
+            Log.d("MainActivity", "City Clicked. Opening Details Activity.")
+            val intent = Intent(activity, DetailsActivity::class.java)
+            intent.putExtra("weather", weather)
+            this.startActivity(intent)
 
         }
 
          */
-
-
-
-        // Add cluster items (markers) to the cluster manager.
-        //addMarkersToClusterer()
     }
 
-    /*
-    googleMap.setOnInfoWindowClickListener { marker ->
-        // Get the weather object associated with the marker
-        val weather = marker.tag as Weather
-
-        // Start DetailsActivity
-        startActivity(DetailsActivity.newInstance(requireContext(), weather))
-    }
-     */
-
-    /*
-    private fun addMarkersToClusterer() {
-
-        // Set some lat/lng coordinates to start with.
-        var lat = 51.5145160
-        var lng = -0.1270060
-
-        // Set the title and snippet strings.
-        val title = "This is the title"
-        val snippet = "and this is the snippet."
-
-        // Create a cluster item for the marker and set the title and snippet using the constructor.
-        val infoWindowItem = MarkerItem(lat, lng, title, snippet)
-        // Add the cluster item (marker) to the cluster manager.
-        clusterManager.addItem(infoWindowItem)
-
-
-        // Add ten cluster items in close proximity, for purposes of this example.
-        for (i in 0..9) {
-            val offset = i / 60.0
-            lat += offset
-            lng += offset
-            val offsetItem =
-                MarkerItem(lat, lng, "Title $i", "Snippet $i")
-            clusterManager.addItem(offsetItem)
-        }
-    }
-    */
-
-    /*
-    fun onMarkerClick(marker: Marker): Boolean {
-
-        // Retrieve the data from the marker.
-        var clickCount = marker.tag as Int?
-
-        // Check if a click count was set, then display the click count.
-        if (clickCount != null) {
-            clickCount = clickCount + 1
-            marker.tag = clickCount
-            Toast.makeText(
-                this,
-                marker.title +
-                        " has been clicked " + clickCount + " times.",
-                Toast.LENGTH_SHORT
-            ).show()
-        }
-
-        // Return false to indicate that we have not consumed the event and that we wish
-        // for the default behavior to occur (which is for the camera to move such that the
-        // marker is centered and for the marker's info window to open, if it has one).
-        return false
-    }
-    */
     inner class MarkerItem(
         tag: Weather,
         position: LatLng,

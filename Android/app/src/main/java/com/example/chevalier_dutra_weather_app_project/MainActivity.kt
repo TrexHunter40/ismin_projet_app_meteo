@@ -20,25 +20,18 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 
-//private const val SERVER_BASE_URL = "https://app_fac649c1-519d-440f-a8f2-07f805f4b83c.cleverapps.io/"
 private const val SERVER_BASE_URL = "https://Project-Weather-LCR-CDO.cleverapps.io/"
+
 class MainActivity : AppCompatActivity(), WeatherAdapter.WeatherListener {
 
     private lateinit var weatherAdapter: WeatherAdapter
     private val weatherDataManager = WeatherDataManager()
-    //private lateinit var recyclerView: RecyclerView
 
     val okHttpClient = OkHttpClient.Builder()
         .addInterceptor(HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         })
         .build()
-    /*
-    private var gson = GsonBuilder()
-        .setLenient()
-        .create()
-
-     */
 
     private val retrofit = Retrofit.Builder()
         .baseUrl(SERVER_BASE_URL)
@@ -66,36 +59,12 @@ class MainActivity : AppCompatActivity(), WeatherAdapter.WeatherListener {
 
         Log.d("MainActivity", "Downloading data")
         refreshWeatherData()
-        /*
-        weatherService.getAllWeather()
-            .enqueue(object : Callback<List<Weather>> {
-                override fun onResponse(
-                    call: Call<List<Weather>>,
-                    response: Response<List<Weather>>
-                ) {
-                    val weatherData: List<Weather>? = response.body()
-                    Log.d("MainActivity", "We have a response: $weatherData")
 
-                    if (response.body() != null) {
-                        Log.d("MainActivity", "Response weatherData is not null.")
-                        weatherDataManager.addWeatherData(weatherData!!)
-                        displayListFragment()
-                    } else
-                        Log.e("MainActivity", "Response weatherData is null.")
-
-                }
-
-                override fun onFailure(call: Call<List<Weather>>, t: Throwable) {
-                    Toast.makeText(this@MainActivity, t.message, Toast.LENGTH_SHORT).show()
-                    Log.e("Retrofit", "Error: ${t.message}")
-                }
-            })
-
-         */
-
+        /* uncomment this to have offline data (and comment refreshWeatherData())
         //initData()
         //setContentView(R.layout.activity_main)
         //displayListFragment()
+        */
 
         findViewById<FloatingActionButton>(R.id.a_main_btn_refresh_data).setOnClickListener {
             refreshWeatherData()
@@ -133,17 +102,44 @@ class MainActivity : AppCompatActivity(), WeatherAdapter.WeatherListener {
                 true
             }
 
-            // Handle other menu items as needed.
             else -> super.onOptionsItemSelected(item)
         }
     }
 
     override fun onCityClicked(weather: Weather) {
-
-        Log.d("MainActivity", "AAAAAAAAAAAAAAAAAAAAAAAAAAH")
+        Log.d("MainActivity", "City Clicked. Opening Details Activity.")
         val intent = Intent(this, DetailsActivity::class.java)
         intent.putExtra("weather", weather)
         this.startActivity(intent)
+    }
+
+    override fun onFavoriteClicked(weather: Weather) {
+        System.out.println("Favorite button Clicked. Sending data to server.")
+
+        weatherService.setFavoriteCity(weather.city, !weather.favorite)
+            .enqueue(object : Callback<Weather> {
+                override fun onResponse(
+                    call: Call<Weather>,
+                    response: Response<Weather>
+                ) {
+                    val weather: Weather? = response.body()
+                    if (response.body() != null) {
+                        Log.d("MainActivity", "Favorite switched")
+                        weatherDataManager.addWeather(weather!!)
+                        displayListFragment()
+                        Toast.makeText(this@MainActivity, "Favorite switched", Toast.LENGTH_SHORT).show()
+                    } else
+                        Log.e("MainActivity", "Response weather for favorite is null.")
+                }
+
+                override fun onFailure(call: Call<Weather>, t: Throwable) {
+                    // DO THINGS
+                    System.out.println("Failed to switch to favorites")
+                    Toast.makeText(this@MainActivity, "Failed to switch favorite", Toast.LENGTH_SHORT).show()
+                }
+            })
+
+
     }
 
 
@@ -155,7 +151,6 @@ class MainActivity : AppCompatActivity(), WeatherAdapter.WeatherListener {
             ListFragment.newInstance(weatherDataManager.getAllWeatherData())
         )
         transaction.commit()
-        //floatingActionButton.visibility = View.VISIBLE
     }
 
     private fun displayMapFragment() {
@@ -164,10 +159,8 @@ class MainActivity : AppCompatActivity(), WeatherAdapter.WeatherListener {
         transaction.replace(
             R.id.main_layout_fragment,
             GoogleMapFragment.newInstance(weatherDataManager.getAllWeatherData())
-            //GoogleMapFragment(weatherDataManager)
         )
         transaction.commit()
-        //floatingActionButton.visibility = View.VISIBLE
     }
 
     private fun displayAboutFragment() {
@@ -178,7 +171,6 @@ class MainActivity : AppCompatActivity(), WeatherAdapter.WeatherListener {
             AboutFragment.newInstance()
         )
         transaction.commit()
-        //floatingActionButton.visibility = View.VISIBLE
     }
 
     private fun refreshWeatherData() {
@@ -198,6 +190,7 @@ class MainActivity : AppCompatActivity(), WeatherAdapter.WeatherListener {
                         Log.d("MainActivity", "Response weatherData is not null.")
                         weatherDataManager.addWeatherData(weatherData!!)
                         displayListFragment()
+                        Toast.makeText(this@MainActivity, "Refreshed", Toast.LENGTH_SHORT).show()
                     } else
                         Log.e("MainActivity", "Response weatherData is null.")
 
@@ -214,8 +207,7 @@ class MainActivity : AppCompatActivity(), WeatherAdapter.WeatherListener {
             val response = weatherService.getAllWeather().execute()
             if (response.isSuccessful) {
                 val weatherData: List<Weather>? = response.body()
-                Log.d("MainActivity", "Raw JSON response: ${response.raw().toString()}")
-                // Rest of the code...
+                Log.d("MainActivity", "Raw JSON response: ${response.raw()}")
             } else {
                 Log.e("MainActivity", "Retrofit Call Unsuccessful: ${response.code()}")
             }
@@ -227,10 +219,10 @@ class MainActivity : AppCompatActivity(), WeatherAdapter.WeatherListener {
 
 
     private fun initData() {
-        /*
+
         weatherDataManager.addWeather(
             Weather(
-                LatLng(43.455672, 5.471045),
+                Position(43.455672, 5.471045),
                 "Gardanne",
                 "04/12/2023",
                 "16h30",
@@ -242,7 +234,7 @@ class MainActivity : AppCompatActivity(), WeatherAdapter.WeatherListener {
 
         weatherDataManager.addWeather(
             Weather(
-                LatLng(48.648750, -2.025740),
+                Position(48.648750, -2.025740),
                 "Saint-Malo",
                 "04/12/2023",
                 "16h30",
@@ -254,7 +246,7 @@ class MainActivity : AppCompatActivity(), WeatherAdapter.WeatherListener {
 
         weatherDataManager.addWeather(
             Weather(
-                LatLng(43.886284, -0.500786),
+                Position(43.886284, -0.500786),
                 "Mont-de-Marsan",
                 "04/12/2023",
                 "16h30",
@@ -266,7 +258,7 @@ class MainActivity : AppCompatActivity(), WeatherAdapter.WeatherListener {
 
         weatherDataManager.addWeather(
             Weather(
-                LatLng(44.840249, -0.573871),
+                Position(44.840249, -0.573871),
                 "Bordeaux",
                 "04/12/2023",
                 "16h30",
@@ -278,7 +270,7 @@ class MainActivity : AppCompatActivity(), WeatherAdapter.WeatherListener {
 
         weatherDataManager.addWeather(
             Weather(
-                LatLng(43.297686, 5.380224),
+                Position(43.297686, 5.380224),
                 "Marseille",
                 "04/12/2023",
                 "16h30",
@@ -290,7 +282,7 @@ class MainActivity : AppCompatActivity(), WeatherAdapter.WeatherListener {
 
         weatherDataManager.addWeather(
             Weather(
-                LatLng(43.528626, 5.447987),
+                Position(43.528626, 5.447987),
                 "Aix-en-Provence",
                 "04/12/2023",
                 "16h30",
@@ -302,7 +294,7 @@ class MainActivity : AppCompatActivity(), WeatherAdapter.WeatherListener {
 
         weatherDataManager.addWeather(
             Weather(
-                LatLng(-8.335099, 115.106876),
+                Position(-8.335099, 115.106876),
                 "Bali",
                 "04/12/2023",
                 "16h30",
@@ -314,7 +306,7 @@ class MainActivity : AppCompatActivity(), WeatherAdapter.WeatherListener {
 
         weatherDataManager.addWeather(
             Weather(
-                LatLng(.762597, -80.214356),
+                Position(.762597, -80.214356),
                 "Miami",
                 "04/12/2023",
                 "16h30",
@@ -323,11 +315,6 @@ class MainActivity : AppCompatActivity(), WeatherAdapter.WeatherListener {
                 false
             )
         )
-
-         */
-
-
-
 
     }
 }

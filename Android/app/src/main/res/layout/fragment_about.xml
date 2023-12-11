@@ -7,37 +7,86 @@
     android:layout_height="match_parent"
     tools:context=".AboutFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-
     <TextView
-        android:id="@+id/textView1"
+        android:id="@+id/f_about_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hello_welcome_to_our_weather_app"
-        app:layout_constraintBottom_toTopOf="@+id/textView2"
+        android:text="@string/about_title"
+        android:textColor="@color/textColorDarkPrimary"
+        android:textSize="26sp"
+        app:layout_constraintBottom_toTopOf="@+id/f_about_divider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/f_about_divider"
+        android:layout_width="0dp"
+        android:layout_height="3dp"
+        android:layout_marginBottom="600dp"
+        android:background="@color/dividerBackground"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/f_about_text_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:text="@string/hello_welcome_to_our_weather_app"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/f_about_text_2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/f_about_divider" />
+
+    <TextView
+        android:id="@+id/f_about_text_2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="@string/this_is_a_school_project_that_is_part_of_our_ismin_computer_science_curriculum"
-        app:layout_constraintBottom_toTopOf="@+id/textView3"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView1" />
+        app:layout_constraintTop_toBottomOf="@+id/f_about_text_1" />
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/f_about_text_4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/made_by_l_o_chevalier_and_carlos_dutra"
+        android:layout_marginTop="100dp"
+        android:gravity="center"
+        android:text="@string/about_text_4"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+        app:layout_constraintTop_toBottomOf="@+id/f_about_text_2" />
+
+    <TextView
+        android:id="@+id/f_about_text_link"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/data_link"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/f_about_text_4" />
+
+    <TextView
+        android:id="@+id/f_about_text_3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="50dp"
+        android:text="@string/made_by_l_o_chevalier_and_carlos_dutra"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
