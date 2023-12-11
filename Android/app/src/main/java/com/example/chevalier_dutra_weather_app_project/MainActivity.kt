@@ -114,18 +114,20 @@ class MainActivity : AppCompatActivity(), WeatherAdapter.WeatherListener {
     }
 
     override fun onFavoriteClicked(weather: Weather) {
-        System.out.println("Favorite button Clicked. Sending data to server.")
+        Log.d("MainActivity", "Favorite button Clicked. Sending data to server.")
 
-        weatherService.setFavoriteCity(weather.city, !weather.favorite)
+        val newFavoriteStatus = !weather.favorite
+
+        weatherService.setFavoriteCity(weather.city, newFavoriteStatus)
             .enqueue(object : Callback<Weather> {
                 override fun onResponse(
                     call: Call<Weather>,
                     response: Response<Weather>
                 ) {
-                    val weather: Weather? = response.body()
+                    val newWeather: Weather? = response.body()
                     if (response.body() != null) {
                         Log.d("MainActivity", "Favorite switched")
-                        weatherDataManager.addWeather(weather!!)
+                        weatherDataManager.addWeather(newWeather!!)
                         displayListFragment()
                         Toast.makeText(this@MainActivity, "Favorite switched", Toast.LENGTH_SHORT).show()
                     } else
@@ -134,8 +136,9 @@ class MainActivity : AppCompatActivity(), WeatherAdapter.WeatherListener {
 
                 override fun onFailure(call: Call<Weather>, t: Throwable) {
                     // DO THINGS
-                    System.out.println("Failed to switch to favorites")
+                    Log.e("MainActivity","Failed to switch to favorites")
                     Toast.makeText(this@MainActivity, "Failed to switch favorite", Toast.LENGTH_SHORT).show()
+                    t.printStackTrace()
                 }
             })
 

@@ -22,7 +22,6 @@ class DetailsActivity : AppCompatActivity() {
         val time: TextView =  findViewById(R.id.a_details_time)
         val temperature: TextView =  findViewById(R.id.a_details_temperature)
         val humidity: TextView =  findViewById(R.id.a_details_humidity)
-        val wind: TextView =  findViewById(R.id.a_details_wind)
 
         if (intent.hasExtra("weather")) {
             weather = intent.getSerializableExtra("weather") as? Weather
@@ -31,9 +30,8 @@ class DetailsActivity : AppCompatActivity() {
                 title.text = it.city
                 date.text = "Date: " + it.date
                 time.text = "Time: " + it.time
-                temperature.text = "Temperature: " + it.temperature
-                humidity.text = "Humidity: " + it.humidity
-                //wind.text = "Wind speed: " + it.wind
+                temperature.text = "Temperature: " + it.temperature + "°C"
+                humidity.text = "Humidity: " + it.humidity + "%"
 
             }
         }

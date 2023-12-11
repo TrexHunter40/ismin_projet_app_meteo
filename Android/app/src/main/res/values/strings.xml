@@ -10,6 +10,6 @@
     <string name="this_is_a_school_project_that_is_part_of_our_ismin_computer_science_curriculum">This is a school project that is part of our ISMIN Computer Science curriculum.</string>
     <string name="hello_welcome_to_our_weather_app">Hello, welcome to our weather app!</string>
     <string name="about_title">About</string>
-    <string name="data_link"><![CDATA[https://data.opendatasoft.com/api/explore/v2.1/catalog/datasets/arome-0025-enriched@public/records?where=commune%20is%20not%20null&limit=100]]></string>
-    <string name="about_text_4">Lien vers les données utilisées :</string>
+    <string name="data_link">here</string>
+    <string name="about_text_4">Link towards the database we used for this app :</string>
 </resources>

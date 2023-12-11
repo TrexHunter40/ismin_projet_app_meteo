@@ -21,8 +21,17 @@ interface WeatherService {
     @POST("weathers") // Method to create a weather data entry for a city
     fun createWeather(@Body wCreated: Weather): Call<Weather>
 
+
     @PUT("weatherData/{city}") // Method to set city as a favorite / remove it (given boolean)
+    fun setFavoriteCity(@Path("city") city: String, @Body favorite: Boolean): Call<Weather>
+
+
+
+    /*
+    @PUT("weatherData/{city}")
     fun setFavoriteCity(@Path("city") city: String, @Body fav: Boolean): Call<Weather>
+
+     */
 
     @DELETE("weathers/{city}") // Method to delete a city
     fun deleteWeather(@Path("city") city: String): Call<Void>
