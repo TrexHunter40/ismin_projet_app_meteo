@@ -3,7 +3,7 @@ import { WeatherService } from './Weather.service';
 import { WeatherDto } from './WeatherDto'
 import {Weather} from "./Weather";
 
-@Controller()
+@Controller('weatherData')
 export class WeatherController {
   //constructor
   constructor(private readonly weatherService: WeatherService,) {}
