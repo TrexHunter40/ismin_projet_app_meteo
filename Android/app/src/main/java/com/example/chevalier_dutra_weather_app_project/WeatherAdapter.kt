@@ -3,6 +3,7 @@ package com.example.chevalier_dutra_weather_app_project
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import java.text.DecimalFormat
 
 class WeatherAdapter (private var weatherData: List<Weather>, private val weatherListener: WeatherListener) : RecyclerView.Adapter<WeatherViewHolder>(){
 
@@ -33,11 +34,11 @@ class WeatherAdapter (private var weatherData: List<Weather>, private val weathe
         holder.city.text = weather.city
         holder.date.text = weather.date
         holder.time.text = weather.time
-        holder.temperature.text = weather.temperature
-        holder.humidity.text = weather.humidity
+        holder.temperature.text = "" + roundToFirstDigit(weather.temperature) + "°C"
+        holder.humidity.text = "" + roundToFirstDigit(weather.humidity) + "%"
 
-        val intTemperature = weather.temperature.substringBefore("°C").toInt()
-        holder.image.setImageResource(getThermometerImage(intTemperature))
+        //val intTemperature = weather.temperature.substringBefore("°C").toInt()
+        holder.image.setImageResource(getThermometerImage(weather.temperature))
 
         holder.linkWeather(weather)
         holder.itemView.setOnClickListener {
@@ -63,14 +64,17 @@ class WeatherAdapter (private var weatherData: List<Weather>, private val weathe
         */
     }
 
-
+    fun roundToFirstDigit(value: Double): Double {
+        val decimalFormat = DecimalFormat("#.#")
+        return decimalFormat.format(value).toDouble()
+    }
 
     override fun getItemCount(): Int {
         return weatherData.size
     }
 
 
-    fun getThermometerImage(temperature: Int): Int {
+    fun getThermometerImage(temperature: Double): Int {
         return when {
             temperature < 10 -> R.drawable.thermometer_cold
             temperature < 25 -> R.drawable.thermometer_medium

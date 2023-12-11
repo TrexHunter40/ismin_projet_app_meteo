@@ -28,9 +28,9 @@ class WeatherViewHolder(rootView: View) : RecyclerView.ViewHolder(rootView) {
     init {
         rootView.setOnClickListener {
             if (rootView.isAttachedToWindow) {
-                weather?.let { selectedWeather ->
+                weather?.let { weather ->
                     val intent = Intent(rootView.context, DetailsActivity::class.java)
-                    intent.putExtra("station_id", selectedWeather.id)
+                    intent.putExtra("weather", weather)
                     rootView.context.startActivity(intent)
                 }
             }

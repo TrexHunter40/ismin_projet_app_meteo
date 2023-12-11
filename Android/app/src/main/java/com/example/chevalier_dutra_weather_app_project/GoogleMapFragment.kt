@@ -52,6 +52,7 @@ class GoogleMapFragment : Fragment() {
         arguments?.let {
             weatherData = it.getSerializable(ARG_WEATHERDATA) as ArrayList<Weather>
         }
+        Log.d("GoogleMap", "Map data: $weatherData")
     }
 
     override fun onCreateView(
@@ -84,7 +85,8 @@ class GoogleMapFragment : Fragment() {
         dataList.forEach { weatherEntry ->
 
             val tag = weatherEntry
-            val location = LatLng(weatherEntry.latitude, weatherEntry.longitude)
+            val location = LatLng(weatherEntry.pos.lat, weatherEntry.pos.lon)
+            //val location = weatherEntry.pos
             val title = weatherEntry.city
             val snippet = "Date: ${weatherEntry.date}\nTemperature: ${weatherEntry.temperature}\nHumidity: ${weatherEntry.humidity}"
             val icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)
@@ -99,7 +101,7 @@ class GoogleMapFragment : Fragment() {
                 //.icon(BitmapDescriptorFactory.fromBitmap())
                 .alpha(0.8f)
              */
-            val newMarker = MarkerItem(tag, location,title, snippet, icon, alpha)
+            val newMarker = MarkerItem(tag, location, title, snippet, icon, alpha)
             //googleMap.addMarker(markerOptions)
             clusterManager.addItem(newMarker)
         }

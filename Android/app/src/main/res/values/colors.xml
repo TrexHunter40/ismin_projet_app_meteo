@@ -13,7 +13,7 @@
 
     <color name="colorPrimary">#FF344C5E</color>
     <color name="colorPrimaryDark">#FF344C5E</color>
-    <color name="colorAccent">#FF30F55B</color>
+    <color name="colorAccent">#FF344C5E</color>
 
     <color name="textColorPrimary">#FFFFFFFF</color>
     <color name="windowBackground">#FFCDD7DB</color>

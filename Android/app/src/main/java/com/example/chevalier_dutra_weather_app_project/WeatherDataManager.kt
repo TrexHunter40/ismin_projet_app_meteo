@@ -11,12 +11,18 @@ class WeatherDataManager {
         Log.d("WeatherDataManager", "Adding data: $weather ; new dataHashMap: $data")
     }
 
+    fun addWeatherData(weatherData: List<Weather>) {
+        weatherData.forEach{weather -> addWeather(weather)}
+    }
+
     fun getAllWeatherData(): ArrayList<Weather> {
         Log.d("WeatherDataManager", "getAllWeatherData() called")
         val res = ArrayList(data.values.sortedBy { weather -> weather.city })
         Log.d("WeatherDataManager", "data: $res")
         return  res
     }
+
+
 
     fun clear() {
         data.clear()

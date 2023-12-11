@@ -1,22 +1,52 @@
 package com.example.chevalier_dutra_weather_app_project
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
+
+//private const val SERVER_BASE_URL = "https://app_fac649c1-519d-440f-a8f2-07f805f4b83c.cleverapps.io/"
 private const val SERVER_BASE_URL = "https://Project-Weather-LCR-CDO.cleverapps.io/"
-
 class MainActivity : AppCompatActivity(), WeatherAdapter.WeatherListener {
 
     private lateinit var weatherAdapter: WeatherAdapter
     private val weatherDataManager = WeatherDataManager()
     //private lateinit var recyclerView: RecyclerView
 
+    val okHttpClient = OkHttpClient.Builder()
+        .addInterceptor(HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        })
+        .build()
+    /*
+    private var gson = GsonBuilder()
+        .setLenient()
+        .create()
+
+     */
+
+    private val retrofit = Retrofit.Builder()
+        .baseUrl(SERVER_BASE_URL)
+        .addConverterFactory(GsonConverterFactory.create())
+        .client(okHttpClient)
+        .build()
+
+    private val weatherService = retrofit.create(WeatherService::class.java)
 
     private val startForResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -29,19 +59,46 @@ class MainActivity : AppCompatActivity(), WeatherAdapter.WeatherListener {
 
 
 
-
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        initData()
-
-
         setContentView(R.layout.activity_main)
-        displayListFragment()
 
-        findViewById<FloatingActionButton>(R.id.a_main_btn_detail_weather).setOnClickListener {
-            val intent = Intent(this, DetailsActivity::class.java)
-            startForResult.launch(intent)
+        Log.d("MainActivity", "Downloading data")
+        refreshWeatherData()
+        /*
+        weatherService.getAllWeather()
+            .enqueue(object : Callback<List<Weather>> {
+                override fun onResponse(
+                    call: Call<List<Weather>>,
+                    response: Response<List<Weather>>
+                ) {
+                    val weatherData: List<Weather>? = response.body()
+                    Log.d("MainActivity", "We have a response: $weatherData")
+
+                    if (response.body() != null) {
+                        Log.d("MainActivity", "Response weatherData is not null.")
+                        weatherDataManager.addWeatherData(weatherData!!)
+                        displayListFragment()
+                    } else
+                        Log.e("MainActivity", "Response weatherData is null.")
+
+                }
+
+                override fun onFailure(call: Call<List<Weather>>, t: Throwable) {
+                    Toast.makeText(this@MainActivity, t.message, Toast.LENGTH_SHORT).show()
+                    Log.e("Retrofit", "Error: ${t.message}")
+                }
+            })
+
+         */
+
+        //initData()
+        //setContentView(R.layout.activity_main)
+        //displayListFragment()
+
+        findViewById<FloatingActionButton>(R.id.a_main_btn_refresh_data).setOnClickListener {
+            refreshWeatherData()
         }
     }
 
@@ -60,8 +117,14 @@ class MainActivity : AppCompatActivity(), WeatherAdapter.WeatherListener {
 
             R.id.action_map-> {
                 Log.d("MainActivity", "Clicked Map Item")
-                displayMapFragment()
-                true
+                if(weatherDataManager.getAllWeatherData().size != 0) {
+                    displayMapFragment()
+                    return true
+                } else {
+                    Log.e("MainActivity", "ERROR while accessing map fragment: no weather data")
+                    Toast.makeText(this@MainActivity, "No data to show", Toast.LENGTH_SHORT).show()
+                    return false
+                }
             }
 
             R.id.action_about-> {
@@ -117,102 +180,151 @@ class MainActivity : AppCompatActivity(), WeatherAdapter.WeatherListener {
         transaction.commit()
         //floatingActionButton.visibility = View.VISIBLE
     }
+
+    private fun refreshWeatherData() {
+        Log.d("MainActivity", "Refreshing WeatherData")
+        weatherDataManager.clear()
+        Log.d("MainActivity", "Downloading data")
+        weatherService.getAllWeather()
+            .enqueue(object : Callback<List<Weather>> {
+                override fun onResponse(
+                    call: Call<List<Weather>>,
+                    response: Response<List<Weather>>
+                ) {
+                    Log.d("MainActivity", "We have a response.")
+                    val weatherData: List<Weather>? = response.body()
+                    Log.d("MainActivity", "Raw JSON response: ${response.raw()}")
+                    if (response.body() != null) {
+                        Log.d("MainActivity", "Response weatherData is not null.")
+                        weatherDataManager.addWeatherData(weatherData!!)
+                        displayListFragment()
+                    } else
+                        Log.e("MainActivity", "Response weatherData is null.")
+
+                }
+
+                override fun onFailure(call: Call<List<Weather>>, t: Throwable) {
+                    Toast.makeText(this@MainActivity, t.message, Toast.LENGTH_SHORT).show()
+                    Log.e("Retrofit", "Error: ${t.message}")
+                    t.printStackTrace()
+                }
+            })
+
+        try {
+            val response = weatherService.getAllWeather().execute()
+            if (response.isSuccessful) {
+                val weatherData: List<Weather>? = response.body()
+                Log.d("MainActivity", "Raw JSON response: ${response.raw().toString()}")
+                // Rest of the code...
+            } else {
+                Log.e("MainActivity", "Retrofit Call Unsuccessful: ${response.code()}")
+            }
+        } catch (e: Exception) {
+            Log.e("MainActivity", "Retrofit Call Exception: ${e.message}")
+        }
+    }
+
+
+
     private fun initData() {
+        /*
         weatherDataManager.addWeather(
             Weather(
-                0,
-                43.455672, 5.471045,
+                LatLng(43.455672, 5.471045),
                 "Gardanne",
                 "04/12/2023",
                 "16h30",
-                "4°C",
-                "77%"
+                4.toDouble(),
+                77.toDouble(),
+                true
             )
         )
 
         weatherDataManager.addWeather(
             Weather(
-                1,
-                48.648750, -2.025740,
+                LatLng(48.648750, -2.025740),
                 "Saint-Malo",
                 "04/12/2023",
                 "16h30",
-                "-1°C",
-                "95%"
+                (-1).toDouble(),
+                95.toDouble(),
+                false
             )
         )
 
         weatherDataManager.addWeather(
             Weather(
-                2,
-                43.886284, -0.500786,
+                LatLng(43.886284, -0.500786),
                 "Mont-de-Marsan",
                 "04/12/2023",
                 "16h30",
-                "5°C",
-                "65%"
+                5.toDouble(),
+                65.toDouble(),
+                false
             )
         )
 
         weatherDataManager.addWeather(
             Weather(
-                3,
-                44.840249, -0.573871,
+                LatLng(44.840249, -0.573871),
                 "Bordeaux",
                 "04/12/2023",
                 "16h30",
-                "4°C",
-                "70%"
+                4.toDouble(),
+                70.toDouble(),
+                false
             )
         )
 
         weatherDataManager.addWeather(
             Weather(
-                4,
-                43.297686, 5.380224,
+                LatLng(43.297686, 5.380224),
                 "Marseille",
                 "04/12/2023",
                 "16h30",
-                "8°C",
-                "55%"
+                8.toDouble(),
+                55.toDouble(),
+                false
             )
         )
 
         weatherDataManager.addWeather(
             Weather(
-                5,
-                43.528626, 5.447987,
+                LatLng(43.528626, 5.447987),
                 "Aix-en-Provence",
                 "04/12/2023",
                 "16h30",
-                "7°C",
-                "66%"
+                7.toDouble(),
+                66.toDouble(),
+                true
             )
         )
 
         weatherDataManager.addWeather(
             Weather(
-                6,
-                -8.335099, 115.106876,
+                LatLng(-8.335099, 115.106876),
                 "Bali",
                 "04/12/2023",
                 "16h30",
-                "32°C",
-                "35%"
+                32.toDouble(),
+                35.toDouble(),
+                false
             )
         )
 
         weatherDataManager.addWeather(
             Weather(
-                7,
-                25.762597, -80.214356,
+                LatLng(.762597, -80.214356),
                 "Miami",
                 "04/12/2023",
                 "16h30",
-                "24°C",
-                "10%"
+                24.toDouble(),
+                10.toDouble(),
+                false
             )
         )
+
+         */
 
 
 
