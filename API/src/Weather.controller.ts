@@ -40,5 +40,5 @@ export class WeatherController {
   deleteWeather(@Param('city') city: string): void {
     this.weatherService.removeWeather(city);
   }
-
+//
 }
